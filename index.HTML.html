@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Story</title>
+    
+    <!-- Tailwind CSS for layout and styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Playfair Display (Cinematic Serif) and Inter (Clean Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- GSAP for Apple-style scroll animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        body {
+            background-color: #050505; /* Deep cinematic black */
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        h1, h2, h3, .cinematic-text {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Ambient background glow */
+        .bg-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 80vw;
+            height: 80vh;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 70%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Subtle Polaroid Styling */
+        .polaroid-frame {
+            background-color: #fdfdfd;
+            padding: 12px 12px 50px 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 2px;
+            width: 100%;
+            max-width: 350px; /* Base size for mobile */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0; /* Hidden by default, GSAP will reveal */
+            visibility: hidden;
+            will-change: transform, opacity;
+        }
+        
+        @media (min-width: 768px) {
+            .polaroid-frame { max-width: 450px; } /* Larger on desktop */
+        }
+
+        /* Polaroid image itself */
+        .polaroid-frame img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 4/5;
+            object-fit: cover;
+            border-radius: 1px;
+            background-color: #222; /* Placeholder color before image loads */
+        }
+
+        /* Slight random tilts to make them feel authentic */
+        .tilt-left { transform: translate(-50%, -50%) rotate(-3deg); }
+        .tilt-right { transform: translate(-50%, -50%) rotate(2deg); }
+        .tilt-slight-left { transform: translate(-50%, -50%) rotate(-1deg); }
+        .tilt-slight-right { transform: translate(-50%, -50%) rotate(1.5deg); }
+
+        /* Text overlay containers */
+        .story-text {
+            position: absolute;
+            bottom: 10%;
+            left: 5%;
+            right: 5%;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 20;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.9);
+            will-change: transform, opacity;
+        }
+
+        @media (min-width: 768px) {
+            .story-text {
+                bottom: 15%;
+                left: 15%;
+                right: 15%;
+            }
+        }
+
+        /* Scroll indicator arrow animation */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+        .scroll-arrow {
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        /* Heartbeat Animation for Finale */
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.08); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.08); }
+            70% { transform: scale(1); }
+        }
+        .beating {
+            animation: heartbeat 1.5s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <section class="h-screen w-full flex flex-col items-center justify-center relative">
+        <h1 class="text-5xl md:text-7xl font-bold cinematic-text tracking-wider text-center px-4">
+            [INSERT YOUR MAIN TITLE HERE]
+        </h1>
+        <p class="mt-6 text-lg md:text-xl text-gray-400 font-light tracking-widest uppercase">
+            A Cinematic Journey
+        </p>
+        
+        <div class="absolute bottom-12 flex flex-col items-center opacity-70">
+            <span class="text-xs uppercase tracking-widest mb-2">Scroll to begin</span>
+            <svg class="w-6 h-6 scroll-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- This container is very tall. As you scroll down it, the visual container sticks to the screen -->
+    <div id="story-trigger" style="height: 1200vh; position: relative;">
+        
+        <!-- The sticky viewfinder where all the action happens -->
+        <div id="sticky-viewfinder" class="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
+            
+            <!-- ====== ACT 1: THE BEGINNING ====== -->
+            
+            <!-- Stage 1 -->
+            <div id="photo-1" class="polaroid-frame tilt-left">
+                <img src="photo1.jpg" onerror="this.src='https://placehold.co/800x1000/111/DDD?text=photo1.jpg'" alt="Act 1, Stage 1">
+            </div>
+            <div id="text-1" class="story-text">
+                <h2 class="text-3xl md:text-5xl cinematic-text mb-4 text-white">[INSERT ACT 1, STAGE 1 TITLE HERE]</h2>
+                <p class="text-sm md:text-lg text-gray-200 max-w-2xl mx-auto">[INSERT ACT 1, STAGE 1 DESCRIPTION OR MEMORY HERE. Keep it to a sentence or two for maximum impact.]</p>
+            </div>
+
+            <!-- Stage 2 -->
+            <div id="photo-2" class="polaroid-frame tilt-right">
+                <img src="photo2.jpg" onerror="this.src='https://placehold.co/800x1000/222/DDD?text=photo2.jpg'" alt="Act 1, Stage 2">
+            </div>
+            <div id="text-2" class="story-text">
+                <h2 class="text-3xl md:text-5xl cinematic-text mb-4 text-white">[INSERT ACT 1, STAGE 2 TITLE HERE]</h2>
+                <p class="text-sm md:text-lg text-gray-200 max-w-2xl mx-auto">[INSERT ACT 1, STAGE 2 DESCRIPTION HERE.]</p>
+            </div>
+
+            <!-- Stage 3 -->
+            <div id="photo-3" class="polaroid-frame tilt-slight-left">
+                <img src="photo3.jpg" onerror="this.src='https://placehold.co/800x1000/111/DDD?text=photo3.jpg'" alt="Act 1, Stage 3">
+            </div>
+            <div id="text-3" class="story-text">
+                <h2 class="text-3xl md:text-5xl cinematic-text mb-4 text-white">[INSERT ACT 1, STAGE 3 TITLE HERE]</h2>
+                <p class="text-sm md:text-lg text-gray-200 max-w-2xl mx-auto">[INSERT ACT 1, STAGE 3 DESCRIPTION HERE. End of the beginning.]</p>
+            </div>
+
+            <!-- ====== ACT 2: THE MIDDLE ====== -->
+            
+            <!-- Stage 4 -->
+            <div id="photo-4" class="polaroid-frame tilt-slight-right">
+                <img src="photo4.jpg" onerror="this.src='https://placehold.co/800x1000/222/DDD?text=photo4.jpg'" alt="Act 2, Stage 1">
+            </div>
+            <div id="text-4" class="story-text">
+                <h2 class="text-3xl md:text-5xl cinematic-text mb-4 text-white">[INSERT ACT 2, STAGE 1 TITLE HERE]</h2>
+                <p class="text-sm md:text-lg text-gray-200 max-w-2xl mx-auto">[INSERT ACT 2, STAGE 1 DESCRIPTION HERE. The journey continues.]</p>
+            </div>
+
+            <!-- Stage 5 -->
+            <div id="photo-5" class="polaroid-frame tilt-left">
+                <img src="photo5.jpg" onerror="this.src='https://placehold.co/800x1000/111/DDD?text=photo5.jpg'" alt="Act 2, Stage 2">
+            </div>
+            <div id="text-5" class="story-text">
+                <h2 class="text-3xl md:text-5xl cinematic-text mb-4 text-white">[INSERT ACT 2, STAGE 2 TITLE HERE]</h2>
+                <p class="text-sm md:text-lg text-gray-200 max-w-2xl mx-auto">[INSERT ACT 2, STAGE 2 DESCRIPTION HERE.]</p>
+            </div>
+
+            <!-- Stage 6 -->
+            <div id="photo-6" class="polaroid-frame tilt-right">
+                <img src="photo6.jpg" onerror="this.src='https://placehold.co/800x1000/222/DDD?text=photo6.jpg'" alt="Act 2, Stage 3">
+            </div>
+            <div id="text-6" class="story-text">
+                <h2 class="text-3xl md:text-5xl cinematic-text mb-4 text-white">[INSERT ACT 2, STAGE 3 TITLE HERE]</h2>
+                <p class="text-sm md:text-lg text-gray-200 max-w-2xl mx-auto">[INSERT ACT 2, STAGE 3 DESCRIPTION HERE.]</p>
+            </div>
+
+            <!-- ====== ACT 3: THE RECENT ====== -->
+
+            <!-- Stage 7 -->
+            <div id="photo-7" class="polaroid-frame tilt-slight-left">
+                <img src="photo7.jpg" onerror="this.src='https://placehold.co/800x1000/111/DDD?text=photo7.jpg'" alt="Act 3, Stage 1">
+            </div>
+            <div id="text-7" class="story-text">
+                <h2 class="text-3xl md:text-5xl cinematic-text mb-4 text-white">[INSERT ACT 3, STAGE 1 TITLE HERE]</h2>
+                <p class="text-sm md:text-lg text-gray-200 max-w-2xl mx-auto">[INSERT ACT 3, STAGE 1 DESCRIPTION HERE. More recent memories.]</p>
+            </div>
+
+            <!-- Stage 8 -->
+            <div id="photo-8" class="polaroid-frame tilt-slight-right">
+                <img src="photo8.jpg" onerror="this.src='https://placehold.co/800x1000/222/DDD?text=photo8.jpg'" alt="Act 3, Stage 2">
+            </div>
+            <div id="text-8" class="story-text">
+                <h2 class="text-3xl md:text-5xl cinematic-text mb-4 text-white">[INSERT ACT 3, STAGE 2 TITLE HERE]</h2>
+                <p class="text-sm md:text-lg text-gray-200 max-w-2xl mx-auto">[INSERT ACT 3, STAGE 2 DESCRIPTION HERE.]</p>
+            </div>
+
+            <!-- Stage 9 -->
+            <div id="photo-9" class="polaroid-frame tilt-left">
+                <img src="photo9.jpg" onerror="this.src='https://placehold.co/800x1000/111/DDD?text=photo9.jpg'" alt="Act 3, Stage 3">
+            </div>
+            <div id="text-9" class="story-text">
+                <h2 class="text-3xl md:text-5xl cinematic-text mb-4 text-white">[INSERT ACT 3, STAGE 3 TITLE HERE]</h2>
+                <p class="text-sm md:text-lg text-gray-200 max-w-2xl mx-auto">[INSERT ACT 3, STAGE 3 DESCRIPTION HERE. Leading into the finale.]</p>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- ====== ACT 4: THE FINALE ====== -->
+    <section id="finale-section" class="h-screen w-full relative flex items-center justify-center bg-black overflow-hidden z-10">
+        
+        <!-- The Heart SVG -->
+        <div id="finale-heart" class="absolute inset-0 flex items-center justify-center opacity-0 scale-50">
+            <svg viewBox="0 0 32 29.6" class="w-3/4 md:w-1/2 h-auto max-w-2xl" style="fill: #801010; filter: drop-shadow(0 0 40px rgba(200, 20, 20, 0.4));">
+                <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
+                c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+            </svg>
+        </div>
+
+        <!-- The Final Message Content -->
+        <div id="finale-text" class="relative z-10 text-center px-6 max-w-3xl opacity-0">
+            <h2 class="text-4xl md:text-6xl cinematic-text mb-6 text-white leading-tight">
+                [INSERT YOUR FINAL TITLE HERE]
+            </h2>
+            <p class="text-lg md:text-2xl text-gray-200 font-light leading-relaxed mb-8">
+                [INSERT YOUR LONG HEARTFELT MESSAGE HERE. This will appear right over the glowing, beating heart. Take your time, write as much as you need, the text will center itself beautifully.]
+            </p>
+            <p class="text-md text-gray-400 italic">
+                [INSERT SIGN OFF, e.g., "I love you, [Name]"]
+            </p>
+        </div>
+    </section>
+
+    <script>
+        // Initialize GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // This timeline binds all our animations to the scroll progress of the #story-trigger div.
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: "#story-trigger",
+                start: "top top",     // Starts when the top of the trigger hits the top of the screen
+                end: "bottom bottom", // Ends when the bottom of the trigger hits the bottom of the screen
+                scrub: 1,             // Smooth scrubbing, catches up over 1 second
+            }
+        });
+
+        const totalStages = 9;
+
+        // Loop through all 9 stages to create the Apple-style crossfade logic automatically
+        for (let i = 1; i <= totalStages; i++) {
+            
+            // 1. Fade IN the photo and scale it slightly for a cinematic reveal
+            tl.to(`#photo-${i}`, { 
+                autoAlpha: 1, // handles opacity and visibility
+                scale: 1, 
+                duration: 2 
+            });
+
+            // 2. Fade IN the text from below
+            tl.fromTo(`#text-${i}`, 
+                { y: 50, autoAlpha: 0 }, 
+                { y: 0, autoAlpha: 1, duration: 2 }, 
+                "<" // Starts at the same time as the photo fade
+            );
+
+            // 3. Pause / Hold (Lets the user read the text and see the photo while scrolling)
+            tl.to({}, { duration: 3 });
+
+            // 4. Fade OUT text (and photo, if it's not the last one)
+            // We slide the text up slightly as it fades out
+            tl.to(`#text-${i}`, { 
+                y: -50, 
+                autoAlpha: 0, 
+                duration: 2 
+            });
+
+            // Fade out the current photo so the next one can appear, 
+            // EXCEPT for the last one (Stage 9), which stays until we scroll into the Finale
+            if (i < totalStages) {
+                tl.to(`#photo-${i}`, { 
+                    autoAlpha: 0, 
+                    scale: 1.05, // Slight zoom as it fades out
+                    duration: 2 
+                }, "<"); 
+            }
+        }
+
+        // Finale Animation Logic
+        // We use a separate ScrollTrigger just for the final section so it reacts when it enters the screen
+        ScrollTrigger.create({
+            trigger: "#finale-section",
+            start: "top center", // Trigger when the top of the finale hits the middle of the screen
+            onEnter: () => {
+                // When entering, scale the heart up and fade it in
+                gsap.to("#finale-heart", { 
+                    autoAlpha: 1, 
+                    scale: 1, 
+                    duration: 2, 
+                    ease: "power2.out",
+                    onComplete: () => {
+                        // Once fully scaled, attach the CSS class to make it continuously beat
+                        document.getElementById("finale-heart").classList.add("beating");
+                    }
+                });
+                
+                // Fade in the final text slightly after the heart appears
+                gsap.to("#finale-text", {
+                    autoAlpha: 1,
+                    y: -20,
+                    duration: 2,
+                    delay: 1,
+                    ease: "power2.out"
+                });
+            },
+            onLeaveBack: () => {
+                // If they scroll back up, remove the beating class and hide it again
+                document.getElementById("finale-heart").classList.remove("beating");
+                gsap.to("#finale-heart", { autoAlpha: 0, scale: 0.5, duration: 1 });
+                gsap.to("#finale-text", { autoAlpha: 0, y: 0, duration: 1 });
+            }
+        });
+    </script>
+</body>
+</html>
